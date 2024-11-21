@@ -1,0 +1,105 @@
+/* 기본 스타일 설정 */
+body {
+    font-family: 'Arial',
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.action-group {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.action-group button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.signup-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.signup-container p {
+    margin: 0;
+}
+
+.signup-container .signup-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.signup-container .signup-button:hover {
+    background-color: #0056b3;
+}
+
+/* 오류 메시지 스타일 */
+.error-message {
+    background-color: #f44336;
+    color: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    position: relative;
+    text-align: center;
+}
+
+.error-message p::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent #f44336 transparent;
+}

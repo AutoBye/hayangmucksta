@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음식점 목록</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/menubar.css">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <style>
+        nav {
+            position: relative;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-container label {
+            margin-right: 10px;
+        }
+
+        .filter-container select,
+        .filter-container input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .pagination a.active {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .restaurant-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .restaurant-item:hover {
+            background: #f9f9f9;
+        }
+
+        .restaurant-card {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <div class="logo">
+            <img src="/images/logo.png" alt="logo">
+        </div>
+        <div class="menuBar">
+            <a href="/">메인</a>
+            <a href="/posts">포스트</a>
+            <a href="/restaurants">음식점</a>
+            <a href="/my-info">내정보</a>
+            <span>|</span>
+            <span th:if="${username != null}">
+                <span th:text="'환영합니다, ' + ${username} + '님!'"></span>
+                <a href="/logout">로그아웃</a>
+            </span>
+            <span th:if="${username == null}">
+                <a href="/login" class="signup">로그인</a>
+                <a href="/signup" class="login">회원가입</a>
+            </span>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <h2>음식점 목록</h2>
+    <div class="filter-container">
+        <div>
+            <label for="sort">정렬 기준:</label>
+            <select id="sort" onchange="location = this.value;">
+                <option value="/restaurants?page=1&sort=name" th:selected="${sort == 'name'}">가나다순</option>
+                <option value="/restaurants?page=1&sort=rating" th:selected="${sort == 'rating'}">별점 높은 순</option>
+            </select>
+        </div>
+        <div>
+            <label for="search">이름 검색:</label>
+            <input type="text" id="search" placeholder="음식점 이름 검색" onkeypress="if (event.key === 'Enter') { searchRestaurants(); }">
+        </div>
+    </div>
+    <ul id="restaurantList">
+        <li th:each="restaurant : ${restaurants}" class="restaurant-item">
+            <div class="restaurant-card">
+                <h3>
+                    <a th:href="@{/restaurants/{id}(id=${restaurant.restaurantId})}" th:text="${restaurant.name}" style="color: black;"></a>
+                </h3>
+                <p th:text="${restaurant.address}"></p>
+                <p>평균 평점: <span th:text="${restaurant.averageRating != null ? #numbers.formatDecimal(restaurant.averageRating, 1, 1) : '평점 없음'}"></span></p>
+            </div>
+        </li>
+    </ul>
+    <div class="pagination">
+        <span th:if="${currentPage > 1}">
+            <a th:href="@{/restaurants(page=${currentPage - 1}, sort=${sort})}">이전</a>
+        </span>
+        <span th:each="pageNum : ${#numbers.sequence(1, totalPages)}">
+            <a th:href="@{/restaurants(page=${pageNum}, sort=${sort})}" th:class="${pageNum == currentPage} ? 'active' : ''" th:text="${pageNum}"></a>
+        </span>
+        <span th:if="${currentPage < totalPages}">
+            <a th:href="@{/restaurants(page=${currentPage + 1}, sort=${sort})}">다음</a>
+        </span>
+    </div>
+</div>
+
+<script>
+    function searchRestaurants() {
+        const searchQuery = document.getElementById('search').value;
+        const baseUrl = '/restaurants?page=1&sort=' + getSortValue(); // 현재 정렬 기준 유지
+        const searchUrl = searchQuery ? baseUrl + '&search=' + encodeURIComponent(searchQuery) : baseUrl;
+        window.location.href = searchUrl;
+    }
+
+    function getSortValue() {
+        const sortSelect = document.getElementById('sort');
+        return sortSelect.options[sortSelect.selectedIndex].value;
+    }
+</script>
+
+</body>
+</html>

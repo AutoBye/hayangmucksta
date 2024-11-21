@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레스토랑 상세 정보</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/menubar.css">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <style>
+        /* 전체 레이아웃 */
+        body {
+            font-family: GumiRomanceTTF, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: static;
+        }
+        .menuBar a {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+            font-size: 16px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* 별점 스타일 (리뷰 보기 - LTR) */
+        .star-rating.ltr {
+            display: inline-flex;
+            font-size: 30px;
+            direction: ltr;
+        }
+
+        .star-rating.ltr span {
+            color: #f1c40f; /* 기본 노란색 */
+        }
+
+        .star-rating.ltr .empty-star {
+            color: #ddd; /* 빈 별은 회색 */
+        }
+
+        /* 리뷰 작성 (별점 선택 - LTR) */
+        .star-rating.rtl {
+            display: inline-flex;
+            font-size: 30px;
+            direction: rtl; /* 오른쪽에서 왼쪽으로 */
+        }
+
+        .star-rating.rtl input {
+            display: none; /* 라디오 버튼 숨기기 */
+        }
+
+        .star-rating.rtl label {
+            color: #ddd; /* 기본 회색 */
+            cursor: pointer;
+            font-size: 30px;
+            margin: 0 5px;
+        }
+
+        /* 클릭된 별 표시 */
+        .star-rating.rtl input:checked ~ label {
+            color: #f1c40f; /* 클릭된 별 노란색 */
+        }
+
+        .star-rating.rtl label:hover,
+        .star-rating.rtl label:hover ~ label {
+            color: #f1c40f; /* 호버한 별과 그 이후 별들도 노란색 */
+        }
+
+        /* 리뷰 작성 폼 스타일 */
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="logo">
+            <img src="/images/logo.png" alt="logo">
+        </div>
+        <div class="menuBar">
+            <a href="/">메인</a>
+            <a href="/posts">포스트</a>
+            <a href="/restaurants">음식점</a>
+            <a href="/my-info">내정보</a>
+            <span>|</span>
+            <span th:if="${username != null}">
+                <span th:text="'환영합니다, ' + ${username} + '님!'"></span>
+                <a href="/logout">로그아웃</a>
+            </span>
+            <span th:if="${username == null}">
+                <a href="/login" class="signup">로그인</a>
+                <a href="/signup" class="login">회원가입</a>
+            </span>
+        </div>
+    </nav>
+</header>
+
+<section class="container">
+    <h1 th:text="${restaurant.name}">레스토랑 이름</h1>
+    <p>주소: <span th:text="${restaurant.address}">레스토랑 주소</span></p>
+    <p>전화번호: <span th:text="${restaurant.phone}">레스토랑 전화번호</span></p>
+
+    <!-- 별점 평균 출력 -->
+    <h2>리뷰 (평균 별점: <span th:text="${#numbers.formatDecimal(averageRating, 1, 1)}"></span>)</h2>
+
+    <ul>
+        <th:block th:each="review : ${reviews}">
+            <li>
+                <span th:text="${review.text}">리뷰 내용</span>
+                <div class="star-rating ltr">
+                    <!-- 별점 5개 중 채워진 별과 빈 별 구분 -->
+                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                        <span th:if="${i <= T(java.lang.Math).floor(review.rating)}">&#9733;</span>
+                        <span th:if="${i > T(java.lang.Math).floor(review.rating)}" class="empty-star">&#9733;</span>
+                    </th:block>
+                </div>
+                <span th:text="${review.user.getUsername()}">작성자</span>
+                <p>작성일: <span th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+            </li>
+        </th:block>
+    </ul>
+
+    <!-- 리뷰 작성 폼 -->
+    <div th:if="${user != null}">
+        <h3>리뷰 작성</h3>
+        <form action="/reviews" method="post">
+            <input type="hidden" th:value="${restaurant.restaurantId}" name="restaurantId">
+            <input type="hidden" th:value="${user.userId}" name="userId">
+            <textarea name="text" placeholder="리뷰를 작성해주세요"></textarea>
+
+            <!-- 별점 선택 (5개의 별) -->
+            <div class="star-rating rtl">
+                <input type="radio" id="star5" name="rating" value="5">
+                <label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1">★</label>
+            </div>
+
+            <button type="submit">리뷰 작성</button>
+        </form>
+    </div>
+
+    <div th:if="${user == null}">
+        <p>리뷰를 작성하려면 로그인이 필요합니다.</p>
+        <a href="/login">로그인</a>
+    </div>
+</section>
+
+</body>
+</html>

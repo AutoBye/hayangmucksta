@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${post.title}">Post Title</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/menubar.css">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+</head>
+<style>
+    /* 전체 레이아웃 */
+    body {
+        font-family: GumiRomanceTTF, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+    }
+
+    /* 컨테이너 */
+    .container {
+        max-width: 1000px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    /* 포스트 제목 */
+    h1 {
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    /* 포스트 메타 정보 */
+    .post-meta {
+        font-size: 14px;
+        color: #888;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .post-meta span {
+        display: inline-block;
+    }
+
+    /* 포스트 내용 */
+    .post-content {
+        font-size: 18px;
+        color: #444;
+        line-height: 1.6;
+    }
+
+    .menuBar a {
+        color: white;
+        text-decoration: none;
+        margin-right: 15px;
+        font-size: 16px;
+    }
+
+    .menuBar a:hover {
+        text-decoration: underline;
+    }
+
+    .logo img {
+        width: 150px;
+    }
+
+    /* 버튼 스타일 */
+    .action-buttons {
+        margin-top: 20px;
+    }
+
+    .action-buttons button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #3498db;
+        color: white;
+        cursor: pointer;
+    }
+
+    .action-buttons button:hover {
+        background-color: #2980b9;
+    }
+
+    /* 댓글 섹션 */
+    .comment-section {
+        margin-top: 40px;
+        border-top: 1px solid #ddd;
+        padding-top: 20px;
+    }
+
+    .comment-section h2 {
+        font-size: 20px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .comment {
+        margin-bottom: 20px;
+    }
+
+    .comment p {
+        font-size: 16px;
+        color: #555;
+        margin: 0;
+    }
+
+    .comment-author {
+        font-size: 14px;
+        color: #888;
+        margin-bottom: 5px;
+    }
+
+    /* 댓글 작성 시간 */
+    .comment-time {
+        font-size: 12px;
+        color: #aaa;
+    }
+
+    /* 댓글 작성 폼 */
+    .comment-form {
+        margin-top: 30px;
+    }
+
+    .comment-form textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        resize: vertical;
+    }
+
+    .comment-form button {
+        margin-top: 10px;
+        padding: 10px 15px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .comment-form button:hover {
+        background-color: #2980b9;
+    }
+
+    /* 글 목록으로 돌아가기 버튼 */
+    .back-to-list {
+        margin-top: 20px;
+        text-align: right;
+    }
+
+    .back-to-list a {
+        padding: 10px 15px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .back-to-list a:hover {
+        background-color: #2980b9;
+    }
+
+    /* 삭제 버튼 스타일 */
+    .delete-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: #888;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .delete-btn:hover {
+        color: #e74c3c;
+    }
+
+
+</style>
+<body>
+<header>
+    <nav>
+        <div class="logo">
+            <img src="/images/logo.png" alt="logo">
+        </div>
+        <div class="menuBar">
+            <a href="/">메인</a>
+            <a href="/posts">포스트</a>
+            <a href="/restaurants">음식점</a>
+            <a href="/my-info">내정보</a>
+            <span>|</span>
+            <span th:if="${username != null}">
+                <span th:text="'환영합니다, ' + ${username} + '님!'"></span>
+                <a href="/logout">로그아웃</a>
+            </span>
+            <span th:if="${username == null}">
+                <a href="/login" class="signup">로그인</a>
+                <a href="/signup" class="login">회원가입</a>
+            </span>
+        </div>
+    </nav>
+</header>
+
+<section class="container">
+    <h1 th:text="${post.title}">포스트 제목</h1>
+
+    <!-- 포스트 메타 정보 -->
+    <div class="post-meta">
+        <span th:text="'작성자: ' + ${post.user.username}">작성자: 작성자명</span>
+        <span th:text="'작성일: ' + ${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">작성일: 2024-10-23 12:00</span>
+    </div>
+
+    <!-- 포스트 내용 -->
+    <div class="post-content" th:text="${post.content}">
+        포스트 내용이 들어갑니다.
+    </div>
+
+    <!-- 수정 및 삭제 버튼 (작성자가 본인일 경우에만 표시) -->
+    <div class="action-buttons" th:if="${post.user.username == username}">
+        <form action="/posts/edit" method="get" style="display: inline;">
+            <input type="hidden" th:value="${post.postId}" name="postId"> <!-- 수정된 부분 -->
+            <button type="submit">수정</button>
+        </form>
+        <form action="/posts/delete" method="post" style="display: inline;">
+            <input type="hidden" th:value="${post.postId}" name="postId"> <!-- 수정된 부분 -->
+            <button type="submit">삭제</button>
+        </form>
+    </div>
+
+    <!-- 댓글 섹션 -->
+    <section class="comment-section">
+        <h2>댓글</h2>
+
+        <!-- 기존 댓글 목록 -->
+        <div class="comment" th:each="comment : ${comments}" style="position: relative;">
+            <div class="comment-author" th:text="${comment.user.username} + ' 님의 댓글'">작성자</div>
+            <p th:text="${comment.content}">댓글 내용</p>
+            <div class="comment-time" th:text="'작성일: ' + ${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</div>
+
+            <!-- 댓글 삭제 버튼 (현재 로그인한 사용자가 댓글 작성자인 경우에만 활성화) -->
+            <button type="button" th:if="${comment.user.username == username}" class="delete-btn"
+                    th:onclick="'deleteComment(' + ${comment.commentId} + ', ' + ${post.postId} + ')'">
+                &times;
+            </button>
+        </div>
+
+        <!-- 댓글 작성 폼 -->
+        <div class="comment-form">
+            <form action="/posts/comments" method="post">
+                <input type="hidden" th:value="${post.postId}" name="postId">
+                <textarea name="commentContent" placeholder="댓글을 입력하세요..." required></textarea>
+                <button type="submit">댓글 작성</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- 이전글/다음글 -->
+    <div class="navigation-links">
+        <div class="prev-post" th:if="${previousPost != null}">
+            <a th:href="@{/posts/{postId}(postId=${previousPost.postId})}" th:text="'이전글 - ' + ${previousPost.title}">이전글</a>
+        </div>
+        <div class="next-post" th:if="${nextPost != null}">
+            <a th:href="@{/posts/{postId}(postId=${nextPost.postId})}" th:text="'다음글 - ' + ${nextPost.title}">다음글</a>
+        </div>
+    </div>
+
+    <!-- 글 목록으로 돌아가기 버튼 -->
+    <div class="back-to-list">
+        <a href="/posts">글 목록으로 돌아가기</a>
+    </div>
+
+</section>
+
+</body>
+<script>
+    function deleteComment(commentId, postId) {
+        if (confirm("댓글을 삭제하시겠습니까?")) {
+            const form = document.createElement('form');
+            form.method = 'post';
+            form.action = '/posts/comments/delete';
+
+            // 댓글 ID
+            const commentInput = document.createElement('input');
+            commentInput.type = 'hidden';
+            commentInput.name = 'commentId';
+            commentInput.value = commentId;
+            form.appendChild(commentInput);
+
+            // 게시글 ID
+            const postInput = document.createElement('input');
+            postInput.type = 'hidden';
+            postInput.name = 'postId';
+            postInput.value = postId;
+            form.appendChild(postInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
+</html>

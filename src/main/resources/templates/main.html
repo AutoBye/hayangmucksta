@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맛집찾아 삼만리</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/post.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/menubar.css">
+    <link rel="stylesheet" href="/css/restaurant.css">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+</head>
+<style>
+</style>
+<body>
+<header>
+    <nav>
+        <div class="logo">
+            <img src="/images/logo.png" alt="logo">
+        </div>
+        <div class="menuBar">
+            <a href="#banner-section">메인</a>
+            <a href="#random-section">랜덤 추천</a>
+            <a href="#recommend-section">추천 음식</a>
+            <a href="#post-section">포스트</a>
+            <a href="#restaurant-section">음식점</a>
+            <a href="/my-info">내 정보</a>
+            <span>|</span>
+            <span th:if="${username != null}">
+            <span th:text="'환영합니다, ' + ${username} + '님!'"></span>
+                <a href="/logout">로그아웃</a>
+            </span>
+            <span th:if="${username == null}">
+                <a href="/login" class="signup">로그인</a>
+                <a href="/signup" class="login">회원가입</a>
+            </span>
+        </div>
+    </nav>
+</header>
+
+
+<section class="banner-section" id="banner-section">
+    <div class="banner-content">
+        <h1>맛집찾아 삼만리</h1>
+        <p>좋아하는 맛을 탐험하세요</p>
+    </div>
+</section>
+
+<!-- 랜덤 가게 추천 버튼 추가 -->
+<section id="random-section" class="random-section">
+    <div class="banner-content">
+        <h1>☆랜덤 추천☆</h1>
+        <p>뭐 먹을지 고민하지마!</p>
+        <p>내가 골라줄게</p>
+        <button id="randomRestaurantBtn" class="button">랜덤 추천</button>
+    </div>
+    <!-- 모달 -->
+    <!-- 모달 창 구조 -->
+    <div id="randomRestaurantModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>추천 가게</h3>
+            <p id="restaurantName">가게 이름</p>
+            <p id="restaurantAddress">가게 주소</p>
+            <div id="menuList"></div> <!-- 메뉴 정보를 표시할 div -->
+        </div>
+    </div>
+    <div id="loading" style="display: none;">맛을 탐구하는중...</div>
+</section>
+
+<section id="recommend-section" class="recommend-section">
+    <!-- 선호재료 기반 가게, 메뉴 추천 버튼 -->
+    <div class="banner-content">
+        <h1>내가 좋아할만한 음식은?</h1>
+        <p>내가 선호하는 재료 기반으로 추천받기!</p>
+        <button id="recommendRestaurantBtn" class="button">추천 시작</button>
+    </div>
+
+    <!-- 추천 결과 모달 -->
+    <div id="recommendationResult" style="display: none;" class="modal">
+        <div class="modal-content">
+            <!-- 닫기 버튼 -->
+            <span class="close2">&times;</span>
+
+            <!-- 추천 결과 -->
+            <div id="recommendationResultContent" style="display: none;">
+                <h3>추천 메뉴</h3>
+                <ul id="recommendedMenuList"></ul>
+            </div>
+            <!-- 로딩 메시지 -->
+            <div id="recommendLoading" style="display: block;">맛을 탐험하는중...</div>
+        </div>
+    </div>
+</section>
+
+<section class="post-section" id="post-section">
+    <div class="section-header">
+        <h2>최근 포스트</h2>
+        <a href="/posts" class="view-more">더보기</a>
+    </div>
+    <ul class="post-list">
+        <th:block th:each="post : ${posts}">
+            <li class="post-item">
+                <a th:href="@{/posts/{postId}(postId=${post.postId})}" th:text="${post.title}"></a>
+            </li>
+        </th:block>
+    </ul>
+</section>
+
+<section class="restaurant-section" id="restaurant-section">
+    <div class="section-header">
+        <h2>음식점</h2>
+        <a href="/restaurants" class="view-more">더보기</a>
+    </div>
+    <ul class="restaurant-list">
+        <th:block th:each="restaurant : ${restaurants}">
+            <li class="restaurant-item">
+                <a th:href="@{/restaurants/{restaurantId}(restaurantId=${restaurant.restaurantId})}">
+                    <div class="restaurant-card">
+                        <h3 th:text="${restaurant.name}"></h3>
+                        <p th:text="${restaurant.address}"></p>
+                    </div>
+                </a>
+            </li>
+        </th:block>
+    </ul>
+</section>
+
+<main>
+</main>
+<div id="footer">
+    <div class="contains">
+        <div class="footer_wrap">
+            <div class="footer_text">
+                <p><span>경일대학교 SW</span>
+                    <span class="line">ㅣ</span>
+                    <span>Tel : 010-6362-2459</span></p>
+                <p class="copyright">COPYRIGHT © ppocharong<br class="show_m"> All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src = "/scripts/randomRestaurants.js"></script>
+<script src = "/scripts/scroll.js"></script>
+</html>

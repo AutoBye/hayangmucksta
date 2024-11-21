@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음식점 목록</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/menubar.css">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+</head>
+<style>
+    nav {
+        position: relative;
+    }
+</style>
+<body>
+<header >
+    <nav>
+        <div class="logo">
+            <img src="/images/logo.png" alt="logo">
+        </div>
+        <div class="menuBar">
+            <a href="/">메인</a>
+            <a href="/posts">포스트</a>
+            <a href="/restaurants">음식점</a>
+            <a href="/my-info">내정보</a>
+            <span>|</span>
+            <span th:if="${username != null}">
+            <span th:text="'환영합니다, ' + ${username} + '님!'"></span>
+                <a href="/logout">로그아웃</a>
+            </span>
+            <span th:if="${username == null}">
+                <a href="/login" class="signup">로그인</a>
+                <a href="/signup" class="login">회원가입</a>
+            </span>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <h2>음식점 목록</h2>
+
+    <div>
+        <form action="/restaurants" method="get">
+            <label for="sort">정렬 기준:</label>
+            <select name="sort" id="sort" onchange="this.form.submit()">
+                <option value="rating" th:selected="${sort == 'rating'}">별점 높은순</option>
+            </select>
+        </form>
+    </div>
+
+    <ul>
+        <li th:each="restaurant : ${restaurants}">
+            <h3 th:text="${restaurant.name}"></h3>
+            <p>평균 평점: <span th:text="${averageRatings[iterStat.index]}">평점 없음</span></p>
+            <p th:text="${restaurant.address}"></p>
+        </li>
+    </ul>
+
+    <div>
+        <span>현재 페이지: <span th:text="${currentPage}"></span></span>
+        <span th:if="${totalPages > 1}">
+            <span th:each="page : ${#numbers.sequence(1, totalPages)}">
+                <a th:href="@{/restaurants(page=${page}, sort=${sort})}" th:text="${page}"></a>
+            </span>
+        </span>
+    </div>
+</div>
+</body>
+</html>

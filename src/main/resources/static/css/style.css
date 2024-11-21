@@ -1,0 +1,308 @@
+/* 전체 레이아웃 */
+html {
+    scroll-behavior: smooth;
+}
+
+@font-face {
+    font-family: 'GumiRomanceTTF';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/GumiRomanceTTF.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+/* 메뉴바 아래에 패딩 추가 */
+body {
+    font-family: GumiRomanceTTF, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f5f5f5;
+}
+
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h2 {
+    margin-top: 30px;
+    color: #333;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+}
+
+/* 배너 */
+.banner-section {
+    width: 100%;
+    height: 800px;
+    background-image: url('/images/banner.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* 배너 섹션의 텍스트 중앙 정렬 및 스타일 */
+.banner-content {
+    text-align: center;
+    z-index: 2; /* 텍스트를 이미지 위에 놓기 위해 높은 z-index */
+    max-width: 800px;
+}
+
+.banner-content h1 {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-transform: uppercase; /* 대문자 스타일 */
+    letter-spacing: 2px;       /* 글자 간격 */
+    line-height: 1.2;
+}
+
+.banner-content p {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+/* 배너 위에 반투명 오버레이를 추가 (배경 이미지 가독성 향상) */
+.banner-section:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* 반투명 검정 오버레이 */
+    z-index: 1;
+}
+
+/* 랜덤 가게 추천 섹션 */
+.random-section {
+    width: 100%;
+    height: 800px;
+    background-image: url('/images/randomsection.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.random-section:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* 반투명 검정 오버레이 */
+    z-index: 1;
+}
+
+
+
+
+
+/* 가게 추천 섹션 */
+.recommend-section {
+    width: 100%;
+    height: 800px;
+    background-image: url('/images/recommend.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+
+/*식당*/
+.restaurant-section {
+    display: flex;
+    flex-direction: column; /* 세로로 정렬 */
+    align-items: center; /* 수평 중앙 정렬 */
+    justify-content: center; /* 수직 중앙 정렬 */
+    margin-top: 20px; /* 배너와 버튼 사이의 간격 */
+    gap: 10px; /* 버튼 사이의 간격 */
+    width: 100%;  /* 섹션 너비 */
+    height: 800px; /* 섹션 높이 */
+    background-color: #f9f9f9;
+}
+
+
+/* 모달 창 기본 스타일 */
+.modal {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 배경을 어둡게 */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #444b56;
+    padding: 20px;
+    border-radius: 10px;
+    width: 500px; /* 모달 창의 가로 크기 고정 */
+    max-height: 70vh; /* 모달 창의 최대 높이 설정 */
+    overflow-y: auto; /* 내용이 넘칠 경우 세로로 스크롤 가능 */
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
+    z-index: 1002;
+}
+
+.recommendationResultContent > a {
+    color: white;
+}
+
+
+
+/* 닫기 버튼 스타일 */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 닫기 버튼 스타일 */
+.close2 {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close2:hover,
+.close2:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 버튼 스타일 */
+.button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: GumiRomanceTTF, sans-serif;
+}
+
+/* 스크롤바 스타일링 (웹킷 기반 브라우저) */
+.modal-content::-webkit-scrollbar {
+    width: 8px; /* 스크롤바의 너비 */
+}
+
+/* 스크롤바 트랙 (배경) */
+.modal-content::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* 스크롤바 배경색 */
+    border-radius: 10px; /* 스크롤바 트랙의 둥근 모서리 */
+}
+
+/* 스크롤바 핸들 (스크롤바 자체) */
+.modal-content::-webkit-scrollbar-thumb {
+    background-color: #888; /* 스크롤바 색상 */
+    border-radius: 10px; /* 스크롤바의 둥근 모서리 */
+    border: 2px solid #f1f1f1; /* 스크롤바의 테두리 */
+}
+
+/* 스크롤바 핸들 (마우스를 올렸을 때) */
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* 스크롤바 색상 변경 (hover) */
+}
+
+/* 스크롤바 스타일 (파이어폭스) */
+.modal-content {
+    scrollbar-width: thin; /* 스크롤바 너비를 얇게 설정 */
+    scrollbar-color: #888 #f1f1f1; /* 스크롤바 색상 및 배경색 */
+}
+
+
+
+
+
+
+
+
+/* 로딩 애니메이션 */
+#loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+}
+
+#loading:after {
+    content: " ";
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 4px solid rgba(0, 0, 0, 0.3);
+    border-top-color: #3498db;
+    animation: spin 1s linear infinite;
+}
+
+/* 로딩 애니메이션 */
+#recommendLoading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+}
+
+#recommendLoading:after {
+    content: " ";
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 4px solid rgba(0, 0, 0, 0.3);
+    border-top-color: #3498db;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 정보</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/menubar.css">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+</head>
+<style>
+    nav {
+        position: relative;
+    }
+</style>
+<body>
+<header >
+    <nav>
+        <div class="logo">
+            <img src="/images/logo.png" alt="logo">
+        </div>
+        <div class="menuBar">
+            <a href="/">메인</a>
+            <a href="/posts">포스트</a>
+            <a href="/restaurants">음식점</a>
+            <a href="/my-info">내정보</a>
+            <span>|</span>
+            <span th:if="${username != null}">
+            <span th:text="'환영합니다, ' + ${username} + '님!'"></span>
+                <a href="/logout">로그아웃</a>
+            </span>
+            <span th:if="${username == null}">
+                <a href="/login" class="signup">로그인</a>
+                <a href="/signup" class="login">회원가입</a>
+            </span>
+        </div>
+    </nav>
+</header>
+<main>
+    <section>
+        <h2>기본 정보</h2>
+        <p>아이디: <span th:text="${user.username}"></span></p>
+        <p>이메일: <span th:text="${user.email}"></span></p>
+        <p>가입 일자: <span th:text="${user.createdAt}"></span></p>
+
+        <!-- 선호 재료가 있는 경우 출력 -->
+        <h3>선호하는 재료</h3>
+        <ul>
+            <th:block th:each="ingredient : ${user.preferredIngredients}">
+                <li th:text="${ingredient.ingredientName}"></li>
+            </th:block>
+        </ul>
+
+        <!-- 선호 재료 수정 폼 -->
+        <h3>선호 재료 수정</h3>
+        <form id="preferred-ingredients-form" action="/update-preferred-ingredients" method="post">
+            <ul id="ingredient-list">
+                <th:block th:each="ingredient, stat : ${user.preferredIngredients}">
+                    <li>
+                        <input type="text" name="ingredients[]" th:value="${ingredient.ingredientName}">
+                        <button type="button" class="remove-ingredient">삭제</button>
+                    </li>
+                </th:block>
+            </ul>
+            <button type="button" id="add-ingredient">재료 추가</button>
+            <br>
+            <button type="submit">저장</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>설정</h2>
+        <a href="/logout" class="button">로그아웃</a>
+    </section>
+</main>
+
+<!-- JavaScript 코드 -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 재료 추가 버튼 처리
+        document.getElementById('add-ingredient').addEventListener('click', function() {
+            const ingredientList = document.getElementById('ingredient-list');
+            const newIngredient = document.createElement('li');
+            newIngredient.innerHTML = `
+            <input type="text" name="ingredients[]" placeholder="새 재료 입력">
+            <button type="button" class="remove-ingredient">삭제</button>
+        `;
+            ingredientList.appendChild(newIngredient);
+        });
+
+        // 재료 삭제 버튼 처리
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('remove-ingredient')) {
+                const listItem = event.target.closest('li');
+                listItem.remove();
+            }
+        });
+
+        // 폼이 제출될 때 데이터를 출력한 후 폼 제출을 막음
+        const form = document.getElementById('preferred-ingredients-form');
+        form.addEventListener('submit', function(event) {
+            //event.preventDefault();  // 폼 제출을 막음
+            const ingredientList = document.querySelectorAll('input[name="ingredients[]"]');
+            ingredientList.forEach((input, index) => {
+                console.log(`Ingredient ${index}: ${input.value}`);
+            });
+
+            // 로그 확인 후 폼 제출을 원할 경우 아래 코드를 주석 해제
+             event.target.submit();
+        });
+    });
+</script>
+</body>
+</html>

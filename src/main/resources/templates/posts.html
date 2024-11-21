@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>최근 포스트</title>
+    <link rel="stylesheet" href="/css/menubar.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+</head>
+<style>
+    /* 전체 레이아웃 */
+    body {
+        font-family: GumiRomanceTTF, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+    }
+
+    /* 메뉴바 */
+    .menuBar a {
+        text-decoration: none;
+        color: white;
+        font-size: 16px;
+        margin: 0 15px;
+    }
+
+    /* 컨테이너 */
+    .container {
+        max-width: 1000px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    /* 검색창 스타일 */
+    .search-bar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .search-bar input[type="text"] {
+        width: 80%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .search-bar button {
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .search-bar button:hover {
+        background-color: #2980b9;
+    }
+
+    /* 글 목록 스타일 */
+    ul.post-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    ul.post-list li {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        transition: background-color 0.2s ease;
+        border-radius: 6px;
+    }
+
+    ul.post-list li:hover {
+        background-color: #f9f9f9;
+    }
+
+    ul.post-list h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #333;
+    }
+
+    ul.post-list p {
+        margin: 5px 0;
+        color: #777;
+    }
+
+    /* 작성자와 작성일을 한 줄로 정렬 */
+    .post-meta {
+        font-size: 14px;
+        color: #aaa;
+    }
+
+    .post-meta span {
+        margin-right: 15px;
+    }
+
+    /* 글 작성 버튼 */
+    .write-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #e74c3c;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        float: right;
+    }
+
+    .write-btn:hover {
+        background-color: #c0392b;
+    }
+
+    /* 페이징 스타일 */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a {
+        margin: 0 5px;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        color: #333;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+    .pagination a.active {
+        background-color: #3498db;
+        color: white;
+        border: 1px solid #3498db;
+    }
+
+    .pagination a:hover {
+        background-color: #ddd;
+    }
+
+</style>
+<body>
+<header>
+    <nav>
+        <div class="logo">
+            <img src="/images/logo.png" alt="logo">
+        </div>
+        <div class="menuBar">
+            <a href="/">메인</a>
+            <a href="/posts">포스트</a>
+            <a href="/restaurants">음식점</a>
+            <a href="/my-info">내정보</a>
+            <span>|</span>
+            <span th:if="${username != null}">
+                <span th:text="'환영합니다, ' + ${username} + '님!'"></span>
+                <a href="/logout">로그아웃</a>
+            </span>
+            <span th:if="${username == null}">
+                <a href="/login" class="signup">로그인</a>
+                <a href="/signup" class="login">회원가입</a>
+            </span>
+        </div>
+    </nav>
+</header>
+
+<section class="container">
+    <!-- 검색바 및 글 작성 버튼 -->
+    <div class="search-bar">
+        <input type="text" id="searchKeyword" placeholder="검색어를 입력하세요...">
+        <button type="button" id="searchBtn">검색</button>
+    </div>
+
+    <!-- 글 작성 버튼 -->
+    <a href="/posts/write" class="write-btn">글 작성</a>
+
+    <!-- Post 목록 -->
+    <h2>글 목록</h2>
+    <ul class="post-list">
+        <th:block th:each="post : ${posts}">
+            <li>
+                <div>
+                    <!-- 제목을 클릭하면 해당 글 상세 페이지로 이동하고, 댓글 수를 제목 옆에 표시 -->
+                    <h3>
+                        <a th:href="@{/posts/{postId}(postId=${post.postId})}" th:text="${post.title}"></a>
+                        <span th:text="'(댓글 ' + ${commentCounts[post.postId]} + '개)'"></span>
+                    </h3>
+                    <p th:text="${post.content}"></p>
+                    <div class="post-meta">
+                        <span>작성자: <span th:text="${post.user.username}"></span></span>
+                        <span>작성일: <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></span></span>
+                    </div>
+                </div>
+            </li>
+        </th:block>
+    </ul>
+</section>
+
+<!-- Pagination -->
+<div class="pagination">
+    <ul>
+        <th:block th:if="${totalPages > 0}">
+            <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                <li>
+                    <a th:href="@{/posts?page=${i}}" th:text="${i}" th:classappend="${i == currentPage} ? 'active' : ''"></a>
+                </li>
+            </th:block>
+        </th:block>
+    </ul>
+</div>
+
+<script>
+    document.getElementById('searchBtn').addEventListener('click', function () {
+        const keyword = document.getElementById('searchKeyword').value.trim();
+
+        if (keyword === '') {
+            alert('검색어를 입력하세요.');
+            return;
+        }
+
+        // 검색어를 서버로 보내기 (GET 방식으로 URL에 검색어를 추가)
+        window.location.href = `/posts/search?keyword=${encodeURIComponent(keyword)}`;
+    });
+
+    // Enter 키를 눌렀을 때도 검색을 실행하도록 추가
+    document.getElementById('searchKeyword').addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+            document.getElementById('searchBtn').click();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+</head>
+<body>
+
+<div class="login-container">
+    <h2>로그인</h2>
+
+    <!-- 에러 메시지를 표시하는 영역 -->
+    <div th:if="${errorMessage != null}" class="error-message">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form action="/login" method="post" class="login-form">
+        <div class="input-group">
+            <label for="username">아이디</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="input-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <div class="action-group">
+            <button type="submit">로그인</button>
+        </div>
+    </form>
+
+    <div class="signup-container">
+        <p>계정이 없으신가요?</p>
+        <a href="/signup" class="signup-button">회원가입</a>
+    </div>
+</div>
+
+</body>
+</html>
